@@ -1,4 +1,4 @@
-package main.grafm;
+package javaIntro.grafm;
 
 import java.util.Iterator;
 
