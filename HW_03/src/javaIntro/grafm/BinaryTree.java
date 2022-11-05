@@ -3,10 +3,68 @@ package javaIntro.grafm;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Iterator;
+import java.util.Stack;
 
-import javaIntro.grafm.Node;
+public class BinaryTree implements Iterable<BinaryTree.Node> {
+    public class BinaryTreeIterator implements Iterator<Node> {
 
-public class BinaryTree implements Iterable<Node> {
+        Stack<Node> stack;
+    
+        public BinaryTreeIterator(Node root) {
+            stack = new Stack<Node>();
+    
+            Node currentNode = root;
+            while (currentNode != null) {
+                stack.push(currentNode);
+                currentNode = currentNode.left;
+            }
+        }
+    
+        @Override
+        public boolean hasNext() {
+            if (stack.empty()) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    
+        @Override
+        public Node next() {
+            Node result = stack.pop();
+            Node currentNode = result.right;
+         
+            while (currentNode != null)
+            {
+                stack.push(currentNode);
+                currentNode = currentNode.left;
+            }
+    
+            return result;
+        }
+        
+    }
+
+    class Node {
+        int data;
+        Node left;
+        Node right;
+     
+        Node(int data)
+        {
+            this.data = data;
+            left = right = null;
+        }
+    
+        public Node getRightNode() {
+            return right;
+        }
+    
+        public Node getLeftNode() {
+            return left;
+        }
+    }
 
     public Node rootNode;
 
@@ -17,7 +75,7 @@ public class BinaryTree implements Iterable<Node> {
     public BinaryTree() {};
 
     public Iterator<Node> iterator() { 
-        return new BinaryTreeIterator(this.rootNode); 
+        return this.new BinaryTreeIterator(this.rootNode); 
     } 
 
     public void add(int data) {
@@ -46,4 +104,8 @@ public class BinaryTree implements Iterable<Node> {
             }
         }
     }
+
+    
+    
 }
+
