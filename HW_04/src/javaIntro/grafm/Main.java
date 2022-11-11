@@ -1,28 +1,89 @@
 package javaIntro.grafm;
+
 import java.io.*;
-import javaIntro.grafm.Decomposer;
+
+import javaIntro.grafm.Line;
+import javaIntro.grafm.Word;
 
 public class Main {
+
     public static void main(String[] args) throws Exception {
+
       try {
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        Decomposer decomposer = new Decomposer();
-        int lineLen = Integer.parseInt(in.readLine());
-        String s;
-        while ((s = in.readLine()) != null) {
-          if(s.isEmpty() || s.isBlank()) {
-            // It had to be a new line otherwise. End paragraph and print it
-            System.out.print(decomposer.getParagraph(lineLen));
-          }
-          else {
-            // Get rid of newLine characters and replace with spaces for consistency
-            // We read 1 line. There can therefore only be 1 end of line
-            decomposer.appendCurrentParagraph(s + " ");
+        InputStreamReader in = new InputStreamReader(System.in);
+
+        String sLineLen = "";
+        int code;
+        while (!Character.isWhitespace(code = in.read())) {
+          sLineLen += (char) code;
+        }
+
+        int lineLen = Integer.parseInt(sLineLen);
+        Line line = new Line(lineLen);
+        Word word = new Word();
+        
+        boolean isBetweenWords = true;
+        boolean wasLastLineEmpty = false;
+
+        while ((code = in.read()) != -1) {
+
+          char c = (char) code;
+          if (Character.isWhitespace(c)) {
+            // ####################################################
+            // Taking care of paragraph ends and newlines
+            // ####################################################
+            if (!String.valueOf(c).matches(".")) {
+              // This is a whitespace line
+              if (wasLastLineEmpty) {
+                // Last line was whitespace too. Check if we should print a paragraph end
+                if (line.getLineLength() > 0) {
+                  System.out.println(line.getParagraphEnd());
+                  System.out.println();
+                  line = new Line(lineLen);
+                }
+              } 
+              // ####################################################
+              // New Line at the end of a word
+              // ####################################################
+              else {
+                if (line.doesWordFit(word)) {
+                  line.insertNewWord(word);
+                } else {
+                  System.out.println(line.getParagraphLine());
+                  line = new Line(lineLen);
+                  line.insertNewWord(word);
+                }
+              }
+              word = new Word(' ');
+              isBetweenWords = true;
+              wasLastLineEmpty = true;
+            }
+            // ####################################################
+            // Trailing whitespaces equal a new word
+            // ####################################################
+            else if (isBetweenWords) {
+              word.appendWord(c);
+            } else {
+              if (line.doesWordFit(word)) {
+                line.insertNewWord(word);
+              } else {
+                System.out.println(line.getParagraphLine());
+                line = new Line(lineLen);
+                line.insertNewWord(word);
+              }
+              word = new Word(' ');
+            }
+          } else {
+            // Some non-whitespace character encountered. Just remember we're mid-paragraph
+            wasLastLineEmpty = false;
+            isBetweenWords = false;
+            word.appendWord(c);
           }
         }
-        System.out.print(decomposer.getParagraph(lineLen));
+        System.out.println(line.getParagraphEnd());
       } catch (NumberFormatException ioe) {
          System.out.println("Error");
       }
     }
 }
+
