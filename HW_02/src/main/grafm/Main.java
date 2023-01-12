@@ -1,17 +1,17 @@
 package main.grafm;
 
+import java.io.*;
 import main.grafm.DynamicArray;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        DynamicArray dynArray = new DynamicArray();
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+            String line = "";
+            int arrSize = Integer.parseInt(in.readLine());
+            int stepNum = Integer.parseInt(in.readLine());
 
-        for (int i = 0; i < args.length; ++i) {
-            dynArray.add(args[i]);
-        }
+            while ((line = in.readLine()) != null) {
 
-        for (int i = 0; i < dynArray.getElementCount(); ++i) {
-            System.out.println(dynArray.get(i));
-        }
+            }
     }
 }
